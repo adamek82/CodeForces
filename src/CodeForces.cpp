@@ -3,8 +3,9 @@
 
 void FastVersionedMap_test()
 {
-    // Create a FastVersionedMap without zeroing out arrays (for speed)
-    FastVersionedMap mapFast(false);
+    // Because this is a stack‑allocated map, we MUST zero‑initialize its internal arrays
+    // to avoid garbage versions. reset() only increments currentVersion—it does NOT clear keyVersion!
+    FastVersionedMap mapFast(true);
 
     // (Optionally) reset the map to set a clean currentVersion.
     mapFast.reset();
@@ -18,10 +19,6 @@ void FastVersionedMap_test()
 
     // Remove key 5
     mapFast.remove(5);
-
-    // Alternatively, create a map with preinitialization if you want guaranteed clean state:
-    FastVersionedMap mapWithInit(true);
-    // Now mapWithInit.keyVersion and mapWithInit.keyValue are guaranteed to be zeroed.
 }
 
 int main() {
