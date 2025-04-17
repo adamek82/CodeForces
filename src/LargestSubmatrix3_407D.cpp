@@ -42,7 +42,7 @@ int largestSubmatrix3() {
     //       • Set dp[r][r][c] = limit.
     //       • Record lastPosMap[v] = c.
     //
-    // This runs in O(m) time per row, with no inner while-loops.
+    // Runs in O(m) time per row, so overall Step 1 is O(n * m).
     // ----------------------------------------------------------------
     for (int r = 1; r <= n; ++r) {
         lastPosMap.reset();         // clear the map in O(1)
@@ -60,6 +60,49 @@ int largestSubmatrix3() {
         }
     }
 
-    // TODO: Steps 2+ to extend dp to multi-row ranges and compute maximum area.
+    // ----------------------------------------------------------------
+    // Step 2: Two-row initialization.
+    //
+    // For each pair of rows (r1 < r2) and each start column c,
+    // we want dp[r1][r2][c] = the maximum C ≥ c such that all entries
+    // in rows r1 and r2 across columns [c..C] are distinct.
+    //
+    // We again sweep right-to-left for each (r1, r2):
+    //  - reset lastPosMap once per row pair (O(1))
+    //  - maintain 'limit' = current furthest valid end column
+    //  - at each column c:
+    //      1. check v1 = a[r1][c]; if seen, limit = min(limit, lastPosMap[v1]-1)
+    //      2. update lastPosMap[v1] = c
+    //      3. check v2 = a[r2][c]; if seen, limit = min(limit, lastPosMap[v2]-1)
+    //      4. update lastPosMap[v2] = c
+    //      5. set dp[r1][r2][c] = limit
+    //
+    // Each sweep is O(m), and there are O(n^2) row-pairs, so
+    // Step 2 runs in O(n^2 * m) time overall.
+    // ----------------------------------------------------------------
+    for (int r1 = 1; r1 <= n; ++r1) {
+        for (int r2 = r1 + 1; r2 <= n; ++r2) {
+            lastPosMap.reset();
+            int limit = m;
+            for (int c = m; c >= 1; --c) {
+                // process row r1's value
+                int v1 = a[r1][c];
+                if (lastPosMap.contains(v1))
+                    limit = min(limit, lastPosMap[v1] - 1);
+                lastPosMap[v1] = c;
+
+                // process row r2's value
+                int v2 = a[r2][c];
+                if (lastPosMap.contains(v2))
+                    limit = min(limit, lastPosMap[v2] - 1);
+                lastPosMap[v2] = c;
+
+                dp[r1][r2][c] = limit;
+            }
+        }
+    }
+
+    // TODO: Steps 3+ to extend dp to larger row ranges and compute max area.
+
     return 0;
 }
