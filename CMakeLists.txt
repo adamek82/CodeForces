@@ -21,6 +21,9 @@ add_executable(CodeForces ${SOURCES})
 # Set MSVC specific compiler flags
 if (MSVC)
     target_compile_options(CodeForces PRIVATE /W4 /WX)
+    # Increase default stack size (reserve 2 MB)
+    set(CMAKE_EXE_LINKER_FLAGS
+        "${CMAKE_EXE_LINKER_FLAGS} /STACK:2000000")
 endif()
 
 # Set output directory

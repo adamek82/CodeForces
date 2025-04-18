@@ -1,8 +1,8 @@
 #include <cstring>  // For memset
 
 // Define the grid size, such that keys range in [0, N*N)
-// Tweak this value as needed. Here, N is set to 101, which means there are 101*101 possible keys.
-const int N = 101;
+// Tweak this value as needed. Here, N is set to 401, which means there are 401*401 possible keys.
+const int N = 401;
 
 /**
  * FastVersionedMap is a specialized mapping container designed for scenarios where:
