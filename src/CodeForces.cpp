@@ -53,14 +53,14 @@ static void runLargestSubmatrix3_407D_tests() {
         ),
         LargestSubmatrix3TestCase(              // 8×8 with 5 full distinct rows (area = 5*8 = 40)
             "8 8\n"
-            "1 2 3 4 5 6 7 8\n"
-            "9 10 11 12 13 14 15 16\n"
+            " 1  2  3  4  5  6  7  8\n"
+            " 9 10 11 12 13 14 15 16\n"
             "17 18 19 20 21 22 23 24\n"
             "25 26 27 28 29 30 31 32\n"
             "33 34 35 36 37 38 39 40\n"
-            "1 1 1 1 1 1 1 1\n"
-            "2 2 2 2 2 2 2 2\n"
-            "3 3 3 3 3 3 3 3\n",
+            " 1  1  1  1  1  1  1  1\n"
+            " 2  2  2  2  2  2  2  2\n"
+            " 3  3  3  3  3  3  3  3\n",
             40
         ),
         LargestSubmatrix3TestCase(              // 4×5 all ones → only 1×1 distinct submatrices (area = 1)
@@ -73,13 +73,23 @@ static void runLargestSubmatrix3_407D_tests() {
         ),
         LargestSubmatrix3TestCase(              // 6×6 all distinct → full matrix is valid (area = 36)
             "6 6\n"
-            "1 2 3 4 5 6\n"
-            "7 8 9 10 11 12\n"
+            " 1  2  3  4  5  6\n"
+            " 7  8  9 10 11 12\n"
             "13 14 15 16 17 18\n"
             "19 20 21 22 23 24\n"
             "25 26 27 28 29 30\n"
             "31 32 33 34 35 36\n",
             36
+        ),
+        LargestSubmatrix3TestCase(              // one more example with the area od 16
+            "6 6\n"
+            "19 16 17 18 15 28\n"
+            "20  1  2  3  4 23\n"
+            " 4  5  6  7  8 24\n"
+            "13  9 10 11 12  5\n"
+            " 4 13 14 15 16  1\n"
+            "30  8 16 27  2 29\n",
+            16
         ),
     };
 

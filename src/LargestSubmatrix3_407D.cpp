@@ -154,8 +154,10 @@ int largestSubmatrix3() {
                 int width = best - c + 1;
                 if (width > 0) {
                     int height = r2 - r1 + 1;
-                    max_area = max(max_area, width * height);
-                    bestRect = { r1, c, r2, best };
+                    if (width * height > max_area) {
+                        max_area = width * height;
+                        bestRect = { r1, c, r2, best };
+                    }
                 }
             }
         }
