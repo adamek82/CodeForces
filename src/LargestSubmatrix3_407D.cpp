@@ -15,6 +15,11 @@ static int dp[MAX_N + 1][MAX_N + 1][MAX_M + 1];  // dp[i1][i2][cStart] = furthes
 // As a global (static storage), its arrays are zero-initialized automatically.
 static FastVersionedMap lastPosMap;
 
+// Simple rectangle struct: stores top-left (r1,c1) and bottom-right (r2,c2)
+struct Rect {
+    int r1, c1, r2, c2;
+};
+
 int largestSubmatrix3() {
     // Read dimensions
     cin >> n >> m;
@@ -102,7 +107,65 @@ int largestSubmatrix3() {
         }
     }
 
-    // TODO: Steps 3+ to extend dp to larger row ranges and compute max area.
+    // ----------------------------------------------------------------
+    // Step 3: Propagate to all row ranges and compute max area (O(n^2 * m))
+    //
+    // We now have dp filled for:
+    //  - dp[r][r][c]      (single rows)
+    //  - dp[r1][r2][c]    (exactly two rows)
+    //
+    // For any r1 < r2 and start c, dp[r1][r2][c] can be refined by:
+    //   min of:
+    //     (1) dp[r1+1][r2][c]   – drop top row
+    //     (2) dp[r1][r2-1][c]   – drop bottom row
+    //     (3) dp[r1][r2][c+1]   – advance start column
+    //
+    // Case (4) where both top and bottom drops happen together is
+    // already captured by Step 2 preprocessing.
+    //
+    // We iterate:
+    //   for r1 = n..1
+    //     for r2 = r1..n
+    //       for c = m..1
+    //         take min over valid neighbors (check boundaries)
+    //         compute area = (r2 - r1 + 1) * (dp[r1][r2][c] - c + 1)
+    //         update max_area
+    // ----------------------------------------------------------------
+    int max_area = 0;
+    Rect bestRect{1, 1, 1, 1};
 
-    return 0;
+    for (int r1 = n; r1 >= 1; --r1) {
+        for (int r2 = r1; r2 <= n; ++r2) {
+            for (int c = m; c >= 1; --c) {
+                int best = dp[r1][r2][c];
+                // (1) drop top row
+                if (r1 < r2)
+                    best = min(best, dp[r1 + 1][r2][c]);
+                // (2) drop bottom row
+                if (r1 < r2)
+                    best = min(best, dp[r1][r2 - 1][c]);
+                // (3) advance start column
+                if (c < m)
+                    best = min(best, dp[r1][r2][c + 1]);
+
+                dp[r1][r2][c] = best;
+
+                // compute area for submatrix [r1..r2]×[c..best]
+                int width = best - c + 1;
+                if (width > 0) {
+                    int height = r2 - r1 + 1;
+                    max_area = max(max_area, width * height);
+                    bestRect = { r1, c, r2, best };
+                }
+            }
+        }
+    }
+
+    // Print the coordinates of the best rectangle
+    cout << bestRect.r1 << ' '
+         << bestRect.c1 << ' '
+         << bestRect.r2 << ' '
+         << bestRect.c2 << '\n';
+
+    return max_area;
 }
