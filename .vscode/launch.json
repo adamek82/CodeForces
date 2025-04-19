@@ -2,10 +2,10 @@
     "version": "2.0.0",
     "configurations": [
         {
-            "name": "Launch CodeForces",
+            "name": "Launch CodeForces (auto)",
             "type": "cppvsdbg",  // ✅ Use MSVC debugger
             "request": "launch",
-            "program": "${workspaceFolder}/bin/Debug/CodeForces.exe",  // ✅ Make sure this path is correct
+            "program": "${workspaceFolder}/bin/${command:cmake.buildType}/CodeForces.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
