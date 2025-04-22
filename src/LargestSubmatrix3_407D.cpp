@@ -31,7 +31,7 @@ int largestSubmatrix3() {
         }
     }
 
-    // ----------------------------------------------------------------
+    // -----------------------------------------------------------------------------
     // Step 1: Initialize dp for single-row submatrices.
     //
     // For each row r and each starting column c, we need:
@@ -48,7 +48,7 @@ int largestSubmatrix3() {
     //       • Record lastPosMap[v] = c.
     //
     // Runs in O(m) time per row, so overall Step 1 is O(n * m).
-    // ----------------------------------------------------------------
+    // -----------------------------------------------------------------------------
     for (int r = 1; r <= n; ++r) {
         lastPosMap.reset();         // clear the map in O(1)
         int limit = m;              // the furthest valid right boundary
@@ -65,7 +65,7 @@ int largestSubmatrix3() {
         }
     }
 
-    // ----------------------------------------------------------------
+    // -----------------------------------------------------------------------------
     // Step 2: Two-row initialization.
     //
     // For each pair of rows (r1 < r2) and each start column c,
@@ -84,7 +84,7 @@ int largestSubmatrix3() {
     //
     // Each sweep is O(m), and there are O(n^2) row-pairs, so
     // Step 2 runs in O(n^2 * m) time overall.
-    // ----------------------------------------------------------------
+    // -----------------------------------------------------------------------------
     for (int r1 = 1; r1 <= n; ++r1) {
         for (int r2 = r1 + 1; r2 <= n; ++r2) {
             lastPosMap.reset();
@@ -107,7 +107,7 @@ int largestSubmatrix3() {
         }
     }
 
-    // ----------------------------------------------------------------
+    // -----------------------------------------------------------------------------
     // Step 3: Propagate to all row ranges and compute max area (O(n^2 * m))
     //
     // We now have dp filled for:
@@ -117,12 +117,47 @@ int largestSubmatrix3() {
     // For any r1 < r2 and start c, dp[r1][r2][c] can be refined by:
     //   min of:
     //     (1) dp[r1+1][r2][c]   – drop top row
+    //
+    //         c         end
+    //       r1 ─────────────    ← we ignore this top stripe
+    //     r1+1 ┌───────────┐
+    //          │           │
+    //       r2 └───────────┘
+    //
     //     (2) dp[r1][r2-1][c]   – drop bottom row
+    //
+    //         c         end
+    //       r1 ┌───────────┐
+    //          │           │
+    //     r2-1 └───────────┘
+    //       r2 ─────────────    ← we ignore this bottom stripe
+    //
     //     (3) dp[r1][r2][c+1]   – advance start column
+    //
+    //           c   c+1    end
+    //       r1 ┌──+────────┐
+    //          │  │        │
+    //       r2 └──+────────┘    ← we chop off column c on the left
     //
     // Case (4) where both top and bottom drops happen together is
     // already captured by Step 2 preprocessing.
     //
+    //            c                  end
+    //        r1  X────────────────┐     ← duplicates at (r1,c)
+    //            │                │
+    //        r2  └────────X───────┘     ← and (r2,somewhere)
+    //
+    //        OR
+    //
+    //            c                  end
+    //        r1  ┌───────────X────┐   ← duplicates at (r1,somewhere)
+    //            │                │
+    //        r2  X────────────────┘   ← and at (r2,c)
+    //
+    // These diagonal conflicts are already captured by our
+    // Phase 2 two‑row sweep, so we don’t need a 4th neighbor in
+    // the Phase 3 min‑propagation.
+    // -----------------------------------------------------------------------------
     // We iterate:
     //   for r1 = n..1
     //     for r2 = r1..n
@@ -130,7 +165,7 @@ int largestSubmatrix3() {
     //         take min over valid neighbors (check boundaries)
     //         compute area = (r2 - r1 + 1) * (dp[r1][r2][c] - c + 1)
     //         update max_area
-    // ----------------------------------------------------------------
+    // -----------------------------------------------------------------------------
     int max_area = 0;
     Rect bestRect{1, 1, 1, 1};
 
