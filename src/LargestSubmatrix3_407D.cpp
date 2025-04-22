@@ -118,7 +118,7 @@ int largestSubmatrix3() {
     //   min of:
     //     (1) dp[r1+1][r2][c]   – drop top row
     //
-    //         c         end
+    //           c        end
     //       r1 ─────────────    ← we ignore this top stripe
     //     r1+1 ┌───────────┐
     //          │           │
@@ -126,7 +126,7 @@ int largestSubmatrix3() {
     //
     //     (2) dp[r1][r2-1][c]   – drop bottom row
     //
-    //         c         end
+    //           c        end
     //       r1 ┌───────────┐
     //          │           │
     //     r2-1 └───────────┘
@@ -134,22 +134,22 @@ int largestSubmatrix3() {
     //
     //     (3) dp[r1][r2][c+1]   – advance start column
     //
-    //           c   c+1    end
-    //       r1 ┌──+────────┐
-    //          │  │        │
-    //       r2 └──+────────┘    ← we chop off column c on the left
+    //           c   c+1  end
+    //       r1 ┌──+─────────┐
+    //          │  │         │
+    //       r2 └──+─────────┘   ← we chop off column c on the left
     //
     // Case (4) where both top and bottom drops happen together is
     // already captured by Step 2 preprocessing.
     //
-    //            c                  end
+    //            c              end
     //        r1  X────────────────┐     ← duplicates at (r1,c)
     //            │                │
     //        r2  └────────X───────┘     ← and (r2,somewhere)
     //
     //        OR
     //
-    //            c                  end
+    //            c              end
     //        r1  ┌───────────X────┐   ← duplicates at (r1,somewhere)
     //            │                │
     //        r2  X────────────────┘   ← and at (r2,c)
