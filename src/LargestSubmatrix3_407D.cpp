@@ -8,8 +8,8 @@ const int MAX_N = 400;  // maximum number of rows
 const int MAX_M = 400;  // maximum number of columns
 
 static int n, m;
-static int a[MAX_N + 1][MAX_M + 1];              // matrix entries, 1-based: [1..n][1..m]
-static int dp[MAX_N + 1][MAX_N + 1][MAX_M + 1];  // dp[i1][i2][cStart] = furthest valid column
+static int a[MAX_N + 1][MAX_M + 1];                 // matrix entries, 1-based: [1..n][1..m]
+static short dp[MAX_N + 1][MAX_N + 1][MAX_M + 1];   // dp[i1][i2][cStart] = furthest valid column
 
 // Global versioned map: maps a value to its last-seen column index in the current pass.
 // As a global (static storage), its arrays are zero-initialized automatically.
@@ -58,10 +58,10 @@ int largestSubmatrix3() {
             int v = a[r][c];
             if (lastPosMap.contains(v)) {
                 // v re‑appears at lastPosMap[v], so we can’t go past that – 1
-                limit = min(limit, lastPosMap[v] - 1);
+                limit = min(limit, static_cast<short>(lastPosMap[v]) - 1);
             }
-            dp[r][r][c] = limit;
-            lastPosMap[v] = c;      // record that v was last seen here
+            dp[r][r][c] = static_cast<short>(limit);
+            lastPosMap[v] = static_cast<short>(c);      // record that v was last seen here
         }
     }
 
@@ -93,16 +93,16 @@ int largestSubmatrix3() {
                 // process row r1's value
                 int v1 = a[r1][c];
                 if (lastPosMap.contains(v1))
-                    limit = min(limit, lastPosMap[v1] - 1);
-                lastPosMap[v1] = c;
+                    limit = min(limit, static_cast<short>(lastPosMap[v1]) - 1);
+                lastPosMap[v1] = static_cast<short>(c);
 
                 // process row r2's value
                 int v2 = a[r2][c];
                 if (lastPosMap.contains(v2))
-                    limit = min(limit, lastPosMap[v2] - 1);
-                lastPosMap[v2] = c;
+                    limit = min(limit, static_cast<short>(lastPosMap[v2]) - 1);
+                lastPosMap[v2] = static_cast<short>(c);
 
-                dp[r1][r2][c] = limit;
+                dp[r1][r2][c] = static_cast<short>(limit);
             }
         }
     }
@@ -150,9 +150,9 @@ int largestSubmatrix3() {
     //        OR
     //
     //            c              end
-    //        r1  ┌───────────X────┐   ← duplicates at (r1,somewhere)
+    //        r1  ┌───────────X────┐     ← duplicates at (r1,somewhere)
     //            │                │
-    //        r2  X────────────────┘   ← and at (r2,c)
+    //        r2  X────────────────┘     ← and at (r2,c)
     //
     // These diagonal conflicts are already captured by our
     // Phase 2 two‑row sweep, so we don’t need a 4th neighbor in
@@ -175,17 +175,17 @@ int largestSubmatrix3() {
                 int best = dp[r1][r2][c];
                 // (1) drop top row
                 if (r1 < r2)
-                    best = min(best, dp[r1 + 1][r2][c]);
+                    best = min(best, static_cast<int>(dp[r1 + 1][r2][c]));
                 // (2) drop bottom row
                 if (r1 < r2)
-                    best = min(best, dp[r1][r2 - 1][c]);
+                    best = min(best, static_cast<int>(dp[r1][r2 - 1][c]));
                 // (3) advance start column
                 if (c < m)
-                    best = min(best, dp[r1][r2][c + 1]);
+                    best = min(best, static_cast<int>(dp[r1][r2][c + 1]));
 
-                dp[r1][r2][c] = best;
+                dp[r1][r2][c] = static_cast<short>(best);
 
-                // compute area for submatrix [r1..r2]×[c..best]
+                // compute area for submatrix [r1..r2] × [c..best]
                 int width = best - c + 1;
                 if (width > 0) {
                     int height = r2 - r1 + 1;

@@ -40,7 +40,7 @@ private:
     int keyVersion[MAX_KEYS];
 
     // Array that stores the value associated with each key.
-    int keyValue[MAX_KEYS];
+    short keyValue[MAX_KEYS];
 
 public:
     /**
@@ -76,7 +76,7 @@ public:
      * @param k The key (should be in the range [0, MAX_KEYS)).
      * @return Reference to the value associated with key 'k'.
      */
-    int& operator[](int k) {
+    short& operator[](int k) {
         keyVersion[k] = currentVersion;
         return keyValue[k];
     }
